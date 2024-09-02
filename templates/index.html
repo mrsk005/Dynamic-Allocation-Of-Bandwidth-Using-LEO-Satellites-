@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bandwidth Allocation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+</head>
+<body>
+    <h1>Dynamic Bandwidth Allocation</h1>
+    <form id="dataForm">
+        <label for="data">Enter Data (JSON):</label>
+        <textarea id="data" name="data" rows="10" cols="50" required></textarea>
+        <button type="submit">Analyze</button>
+    </form>
+    <div id="results"></div>
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const data = document.getElementById('data').value;
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(JSON.parse(data)),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('results').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            })
+            .catch(error => {
+                document.getElementById('results').innerHTML = `<pre>${error}</pre>`;
+            });
+        });
+    </script>
+</body>
+</html>
